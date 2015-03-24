@@ -102,7 +102,7 @@ switch ($page) {
 			create_page($survey_id);
 			
 			if (isset($_POST['save_button'])) {
-				header("Location: survey.php?page=form&survey_id=$survey_id");
+				header("Location: survey.php?page=form&id=$survey_id");
 			} else if (isset($_POST['next_button'])) {
 				header("Location: survey.php?page=page&survey_id=$survey_id&page_id=2");
 			}

@@ -91,6 +91,7 @@ function update_landlord($data_landlord, $survey_id, $l){
 
 function delete($id){
 	mysql_query("delete from survey  where survey_id = '$id'");
+	mysql_query("delete from survey_details  where survey_id = '$id'");
 }
 
 
