@@ -82,7 +82,7 @@
                                               <td style="text-align:center;">
 
                                                     <a href="survey.php?page=form&id=<?= $row['survey_id']?>" class="btn btn-default" ><i class="fa fa-pencil"></i></a>
-                                                     <a href="survey.php?page=create_pdf&survey_id=<?= $row['survey_id']?>" class="btn btn-default"  target="_blank" ><i class="fa fa-print"></i></a>
+                                                     <a href="survey.php?page=create_pdf&survey_id=<?= $row['survey_id']?>" class="btn btn-default" ><i class="fa fa-print"></i></a>
                                                     <a href="javascript:void(0)" onclick="confirm_delete(<?= $row['survey_id']; ?>,'survey.php?page=delete&id=')" class="btn btn-default" ><i class="fa fa-trash-o"></i></a>
 
                                                 </td>
@@ -97,7 +97,9 @@
                                         </tbody>
                                           <tfoot>
                                             <tr>
-                                                <td colspan="8"><a href="<?= $add_button ?>" class="btn btn-info " >Add</a></td>
+                                                <td colspan="8"><a href="<?= $add_button ?>" class="btn btn-info " >Add</a>
+                                                <a href="<?= $export_excel_button ?>" class="btn btn-info " >Export Excel</a>
+                                                </td>
                                                
                                             </tr>
                                         </tfoot>

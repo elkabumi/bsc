@@ -40,12 +40,19 @@ function create($data){
 function create_page($survey_id){
 	// create halaman 2
 	for($i=1; $i<=14; $i++){
+		$sd_category = 1;
+		$sd_view_type = 0;
+		if($i==11){
+			$sd_view_type = 1;
+		}
 		$data_detail = "'',
 					'$survey_id', 
 					'$i', 
 					'2',
 					'', 
-					''
+					'',
+					'$sd_category',
+					'$sd_view_type'
 			";
 		mysql_query("insert into survey_details values(".$data_detail.")");
 	}
@@ -65,12 +72,19 @@ function create_page($survey_id){
 	
 	// create halaman 3
 	for($i3=1; $i3<=4; $i3++){
+		$sd_category = 3;
+		$sd_view_type = 0;
+		if($i3==1 || $i3==2){
+			$sd_view_type = 1;
+		}
 		$data_detail3 = "'',
 					'$survey_id', 
 					'$i3', 
 					'3',
 					'', 
-					''
+					'',
+					'$sd_category',
+					'$sd_view_type'
 			";
 		mysql_query("insert into survey_details values(".$data_detail3.")");
 	}
@@ -92,6 +106,14 @@ function update_landlord($data_landlord, $survey_id, $l){
 function delete($id){
 	mysql_query("delete from survey  where survey_id = '$id'");
 	mysql_query("delete from survey_details  where survey_id = '$id'");
+}
+
+function get_data_survey($survey_id){
+	$query = mysql_query("select * from survey where survey_id = '$survey_id'");
+	
+			
+	$result = mysql_fetch_array($query);
+	return $result;
 }
 
 

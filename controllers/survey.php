@@ -14,6 +14,7 @@ switch ($page) {
 		
 		$query = select();
 		$add_button = "survey.php?page=form";
+		$export_excel_button = "export_excel.php";
 
 		include '../views/survey/list.php';
 		get_footer();
@@ -29,6 +30,8 @@ switch ($page) {
 
 			$row = read_id($id);
 			$action = "survey.php?page=edit&id=$id";
+			
+			$next_button = "survey.php?page=page&survey_id=$id&page_id=2";
 			
 		} else{
 			
@@ -55,6 +58,15 @@ switch ($page) {
 		$survey_id = (isset($_GET['survey_id'])) ? $_GET['survey_id'] : null;
 		$page_id = (isset($_GET['page_id'])) ? $_GET['page_id'] : null;
 		
+		$next_page = $page_id + 1;
+		$prev_page = $page_id - 1;
+		if($prev_page == 1){
+			$prev_button = "survey.php?page=form&id=$survey_id";
+		}else{
+			$prev_button = "survey.php?page=page&survey_id=$survey_id&page_id=$prev_page";
+		}
+		$next_button = "survey.php?page=page&survey_id=$survey_id&page_id=$next_page";
+		
 		if($survey_id){
 
 			$action = "survey.php?page=edit_page&survey_id=$survey_id&page_id=$page_id";
@@ -66,6 +78,7 @@ switch ($page) {
 		switch($page_id){
 			case 2: $page_no = 2; include '../views/survey/page2.php'; break;
 			case 3: $page_no = 3; include '../views/survey/page3.php'; break;
+			default: include '../views/survey/page_not_found.php'; break;
 		}
 		
 		get_footer();
@@ -115,12 +128,13 @@ switch ($page) {
 		
 		$id = get_isset($_GET['id']);
 		
-		if (isset($_POST['i_search_page'])) {
+		if ((isset($_POST['i_search_page']) && $_POST['i_search_page']!="") || isset($_POST['go_button'])) {
 			$search_page = $_POST['i_search_page'];
-			header("Location: survey.php?page=page&survey_id=$id&page_id=$search_page");
-		} if (isset($_POST['go_button'])) {
-			$search_page = $_POST['i_search_page'];
-			header("Location: survey.php?page=page&survey_id=$id&page_id=$search_page");
+			if($search_page == 1){
+				header("Location: survey.php?page=form&id=$id");
+			}else{
+				header("Location: survey.php?page=page&survey_id=$id&page_id=$search_page");
+			}
 		}else{ 
 
 		$i_site_name = get_isset($i_site_name);
@@ -154,18 +168,17 @@ switch ($page) {
 	
 	case 'edit_page':
 	
-		
-
 		$survey_id = (isset($_GET['survey_id'])) ? $_GET['survey_id'] : null;
 		$page_id = (isset($_GET['page_id'])) ? $_GET['page_id'] : null;
 		
-		if (isset($_POST['i_search_page'])) {
+		if ((isset($_POST['i_search_page']) && $_POST['i_search_page']!="") || isset($_POST['go_button'])) {
 			$search_page = $_POST['i_search_page'];
-			header("Location: survey.php?page=page&survey_id=$survey_id&page_id=$search_page");
-		} if (isset($_POST['go_button'])) {
-			$search_page = $_POST['i_search_page'];
-			header("Location: survey.php?page=page&survey_id=$survey_id&page_id=$search_page");
-		}else{ 
+			if($search_page == 1){
+				header("Location: survey.php?page=form&id=$survey_id");
+			}else{
+				header("Location: survey.php?page=page&survey_id=$survey_id&page_id=$search_page");
+			}
+		}else{  
 
 		switch($page_id){
 			case 2:
@@ -284,6 +297,12 @@ switch ($page) {
 		$html .= '<body></html>';
 		
 		$dompdf->set_paper("A4");
+		
+		$data_survey = get_data_survey($survey_id);
+		$date = date("Ymdhms");
+		$title = $data_survey['survey_id']."_".$data_survey['site_id']."_".$data_survey['site_name']."_".$date;
+		
+			
 		 
 		// load the html content
 		$dompdf->load_html($html);
@@ -291,7 +310,15 @@ switch ($page) {
 		$canvas = $dompdf->get_canvas();
 		$font = Font_Metrics::get_font("helvetica", "bold");
 		$canvas->page_text(16, 800, "Page: {PAGE_NUM} of {PAGE_COUNT}", $font, 8, array(0,0,0));
-		$dompdf->stream("Survey_".$survey_id.".pdf",array("Attachment"=>0));
+		$dompdf->stream($title.".pdf",array("Attachment"=>1));
+	break;
+	
+	case 'export_excel':
+			
+			$title = "list_survey";
+			$format = create_report($title);
+			
+			include '../views/report_excel/survey/report.php';
 	break;
 	
 }
